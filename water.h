@@ -11,13 +11,17 @@ class water{
 public:
 	water(int num_of_line);
 	~water();
-
+	
+	// draw
 	void draw();
+	void reset();
+
+	// compute and fine coordinates
 	void computation(int** line_array, int** dot_array, int num_of_line , int num_of_dots, int dot_idx);
 	int distance(int* line_array, int start_x, int start_y);
 	int find_nearest(int** line_array, int num_of_line, int start_x, int start_y);
+	
 	void update();
-	void reset();
 
 	float local_r, local_g, local_b;
 	int target_1, target_2;
