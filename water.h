@@ -3,6 +3,7 @@
 #include <cstdlib>
 
 #define EPSIL 0.01
+
 typedef struct _coordinate {
 	int x, y;
 }coordinate;
