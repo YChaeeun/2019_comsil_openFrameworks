@@ -13,6 +13,7 @@ void ofApp::setup(){
     load_flag = 0;
 	draw_sub_flag = 0;
     dot_diameter = 20.0f;
+	num_of_waterline = 10;
 }
 
 //--------------------------------------------------------------
@@ -63,7 +64,7 @@ void ofApp::draw(){
         
         
         // 2nd week portion.
-        ofSetLineWidth(5);
+        ofSetLineWidth(2);
 		if (draw_sub_flag) {
 			for (unsigned int i = 0; i < waterline.size(); i++) {
 				if (!waterline[i].calc_path) waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx);
@@ -339,7 +340,7 @@ void ofApp::initializeWaterLines() {
 	int local_x, local_y;
 
 	if (waterline.empty()) {
-		waterline.assign(50, water(num_of_line));
+		waterline.assign(num_of_waterline, water(num_of_line));
 	}
 	
 	// find (x,y) of selected dot
@@ -353,7 +354,7 @@ void ofApp::initializeWaterLines() {
 	cout << "water dot_idx" << dot_idx;
 
 	// starting point (x,y)
-	for (int i = 0; i < 50; i++) {
+	for (int i = 0; i < num_of_waterline; i++) {
 		waterline[i].inter_path[0].x = local_x;
 		waterline[i].inter_path[0].y = local_y;
 	}

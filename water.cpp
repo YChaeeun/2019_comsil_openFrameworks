@@ -33,11 +33,11 @@ void water::draw()
 {
 	reset();
 	ofSetColor(local_r, local_g, local_b);
-	
+	int ran = ofRandom(-9, 9);
 	if (calc_path) {
 		for (int i = 0; i < num_of_path - 1; i++) {
 			if (inter_path[i].x < ofGetWidth() && inter_path[i].y < ofGetHeight()) {
-				ofDrawLine(inter_path[i].x, inter_path[i].y, inter_path[i + 1].x, inter_path[i + 1].y);
+				ofDrawLine(inter_path[i].x+ran, inter_path[i].y, inter_path[i + 1].x+ran, inter_path[i + 1].y);
 			}
 			
 		}

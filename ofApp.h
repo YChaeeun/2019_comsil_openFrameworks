@@ -47,5 +47,6 @@ class ofApp : public ofBaseApp{
 		int dot_idx=0;
 		
 		vector<water> waterline;
+		int num_of_waterline;
 
 };
