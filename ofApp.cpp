@@ -37,15 +37,16 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-	ofSetColor(127, 23, 31);  // Set the drawing color to brown
-
-	// Draw shapes for ceiling and floor
-	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
-	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
-	ofSetLineWidth(5);
-	
 
 	if (draw_flag == 1) {
+		
+		if (night_mode_flag) {
+			ofBackground(0, 0, 0);
+		}
+		else {
+			ofBackground(255, 255, 255);
+		}
+
 		background.draw(0, 0);
 
 		for (int i = 0; i < num_of_dot; i++) {
@@ -77,6 +78,13 @@ void ofApp::draw(){
 		}
 
 	}
+
+	ofSetColor(127, 23, 31);  // Set the drawing color to brown
+
+	// Draw shapes for ceiling and floor
+	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
+	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
+	ofSetLineWidth(5);
 	
 }
 
@@ -149,6 +157,17 @@ void ofApp::keyPressed(int key){
 		}
 
 		cout << "change_line_flag"<<change_line_flag << endl;
+	}
+	if (key == 'n') {
+		if (!load_flag) return;
+		if (night_twice) {
+			night_mode_flag = 0;
+			night_twice = 0;
+		}
+		else {
+			night_mode_flag = 1;
+			night_twice = 1;
+		}
 	}
 }
 
@@ -382,7 +401,7 @@ void ofApp::set_background()
 {
 	background.allocate(width, height);
 	background.begin();
-	ofClear(240, 255, 255, 0);
+	//ofClear(240, 255, 255, 0);
 
 	ofSetLineWidth(5);
 

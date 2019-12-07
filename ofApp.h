@@ -60,5 +60,7 @@ class ofApp : public ofBaseApp{
 		void changeLineCoordinate();
 		ofFbo newLine;
 		
+		int night_mode_flag;
+		int night_twice;
 
 };
