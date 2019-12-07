@@ -8,10 +8,15 @@ void ofApp::setup(){
     // the background before we do anything with the brush
     ofBackground(255,255,255);
     ofSetLineWidth(4);
+
+	width = ofGetWidth();
+	height = ofGetHeight();
+
     
     draw_flag = 0;
     load_flag = 0;
 	draw_sub_flag = 0;
+	change_line_flag = 0;
     dot_diameter = 20.0f;
 }
 
@@ -31,47 +36,42 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-    ofSetColor(127,23,31);  // Set the drawing color to brown
-    
-    // Draw shapes for ceiling and floor
-    ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
-    ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
-    ofSetLineWidth(5);
-    
-    
-    ofSetLineWidth(5);
-    if( draw_flag ){
-        
-        /* COMSIL1-TODO 3 : Draw the line segment and dot in which water starts to flow in the screen.
-         Note that after drawing line segment and dot, you have to make selected water start dot colored in red.
-         */
 
-		for (int i = 0; i < num_of_line; i++) {
-			ofSetColor(0, 0, 0);
-			ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
-		}
+	ofSetColor(127, 23, 31);  // Set the drawing color to brown
+
+	// Draw shapes for ceiling and floor
+	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
+	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
+	ofSetLineWidth(5);
+	
+
+	if (draw_flag == 1) {
+		background.draw(0, 0);
 
 		for (int i = 0; i < num_of_dot; i++) {
 			if (i == dot_idx) {
 				ofSetColor(255, 0, 0);
 			}
-			else ofSetColor(0, 0, 0);
-			
+			else {
+				ofSetColor(0, 0, 0);
+			}
 			ofDrawCircle(dot_array[i][0], dot_array[i][1], 10);
 		}
-
-        
-        
-        // 2nd week portion.
-        ofSetLineWidth(5);
-		if (draw_sub_flag) {
-			for (unsigned int i = 0; i < waterline.size(); i++) {
-				if (!waterline[i].calc_path) waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx);
-				waterline[i].draw();
-			}
-
+	}
+		
+	ofSetLineWidth(5);
+	if (draw_sub_flag) {
+		for (unsigned int i = 0; i < waterline.size(); i++) {
+			if (!waterline[i].calc_path)
+				waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx);
+			waterline[i].draw();
 		}
-    }
+	}
+
+	if (change_line_flag == 1) {
+		newLine.draw(0, 0);
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -106,6 +106,7 @@ void ofApp::keyPressed(int key){
         if(!load_flag) return;
         
 		draw_flag = 1;
+		cout << draw_flag << endl;
         /* COMSIL1-TODO 2: This is draw control part.
         You should draw only after when the key 'd' has been pressed.
         */
@@ -130,11 +131,18 @@ void ofApp::keyPressed(int key){
 			waterline[i].inter_path[i].x = waterline[i].inter_path[i].y = -1;
 		}
     }
+	if (key == 'c'){
+		if (!load_flag) return;
+
+		change_line_flag = 1;
+		cout << "change_line_flag"<<change_line_flag << endl;
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     if( key == 'l'){
+		cout << "load flag = 1" << endl;
         // Open the Open File Dialog
         ofFileDialogResult openFileResult= ofSystemLoadDialog("Select a only txt for Waterfall");
         
@@ -216,10 +224,6 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) { 
     //Path to the comma delimited file
     //string fileName = "input.txt";
-
-	// array ÃÊ±âÈ­?
-
-
     
     string fileName = openFileResult.getName();
     ofFile file(fileName);
@@ -331,6 +335,8 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
     } // End of for-loop (Read file line by line).
     
     initializeWaterLines();
+	changeLineCoordinate();
+	set_background();
 	
 }
 
@@ -357,6 +363,40 @@ void ofApp::initializeWaterLines() {
 		waterline[i].inter_path[0].x = local_x;
 		waterline[i].inter_path[0].y = local_y;
 	}
+}
+
+void ofApp::set_background()
+{
+	background.allocate(width, height);
+	background.begin();
+	ofClear(240, 255, 255, 0);
+
+	ofSetColor(127, 23, 31);  // Set the drawing color to brown
+	ofSetLineWidth(5);
+
+	for (int i = 0; i < num_of_line; i++) {
+		ofSetColor(0, 0, 0);
+		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
+	}
+
+	background.end();
+}
+
+void ofApp::changeLineCoordinate()
+{
+	newLine.allocate(width, height);
+	newLine.begin();
+
+	ofSetColor(127, 23, 31);  // Set the drawing color to brown
+	ofSetLineWidth(5);
+
+
+	for (int i = 0; i < num_of_line; i++) {
+		ofSetColor(0, 0, 0);
+		ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
+	}
+
+	newLine.end();
 }
 
 
