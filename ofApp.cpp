@@ -59,6 +59,14 @@ void ofApp::draw(){
 		}
 
 
+		
+
+
+		if (change_line_flag == 1) {
+			ofSetColor(255, 255, 255);
+			newLine.draw(0, 0);
+		}
+
 		ofSetLineWidth(5);
 		if (draw_sub_flag) {
 			for (unsigned int i = 0; i < waterline.size(); i++) {
@@ -66,12 +74,6 @@ void ofApp::draw(){
 					waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx, change_line_flag);
 				waterline[i].draw();
 			}
-		}
-
-
-		if (change_line_flag == 1) {
-			ofSetColor(255, 255, 255);
-			newLine.draw(0, 0);
 		}
 
 	}
