@@ -17,6 +17,7 @@ void ofApp::setup(){
     load_flag = 0;
 	draw_sub_flag = 0;
 	change_line_flag = 0;
+	night_mode_flag = 0;
     dot_diameter = 20.0f;
 }
 
@@ -38,36 +39,51 @@ void ofApp::update(){
 void ofApp::draw(){
 
 
+	if (night_mode_flag) {
+		ofBackground(0, 0, 0);
+	}
+	else {
+		ofBackground(255, 255, 255);
+	}
+
+
 	if (draw_flag == 1) {
-		
-		if (night_mode_flag) {
-			ofBackground(0, 0, 0);
-		}
-		else {
-			ofBackground(255, 255, 255);
+
+		ofSetLineWidth(5);
+
+
+		// draw line
+		for (int i = 0; i < num_of_line; i++) {
+			ofSetColor(0, 0, 0);
+			if (night_mode_flag || change_line_flag) ofSetColor(255, 255, 255);
+			if (night_mode_flag && change_line_flag) ofSetColor(0, 0, 0);
+			ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
 		}
 
-		background.draw(0, 0);
-
+		// draw dots
 		for (int i = 0; i < num_of_dot; i++) {
 			if (i == dot_idx) {
 				ofSetColor(255, 0, 0);
 			}
 			else {
 				ofSetColor(0, 0, 0);
+				if (night_mode_flag) ofSetColor(255, 255, 255);
 			}
 			ofDrawCircle(dot_array[i][0], dot_array[i][1], 10);
 		}
 
-
-		
-
-
-		if (change_line_flag == 1) {
-			ofSetColor(255, 255, 255);
-			newLine.draw(0, 0);
+		// change_line_mode
+		if (change_line_flag) {
+			for (int i = 0; i < num_of_line; i++) {
+				ofSetColor(255, 255, 255);
+				if (night_mode_flag || change_line_flag) ofSetColor(0, 0, 0);
+				if (night_mode_flag && change_line_flag) ofSetColor(255, 255, 255);
+				ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
+			}
 		}
 
+
+		// water fall
 		ofSetLineWidth(5);
 		if (draw_sub_flag) {
 			for (unsigned int i = 0; i < waterline.size(); i++) {
@@ -397,20 +413,17 @@ void ofApp::initializeWaterLines() {
 	}
 }
 
+
 void ofApp::set_background()
 {
 	background.allocate(width, height);
 	background.begin();
-	//ofClear(240, 255, 255, 0);
 
 	ofSetLineWidth(5);
 
 	for (int i = 0; i < num_of_line; i++) {
-		
 		ofSetColor(0, 0, 0);
 		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
-		
-		
 	}
 
 	background.end();
@@ -420,22 +433,19 @@ void ofApp::changeLineCoordinate()
 {
 	newLine.allocate(width, height);
 	newLine.begin();
-	//ofClear(255, 255, 255, 0);
-	
-	//ofSetColor(0xffffff);  // Set the drawing color to brown
-	//ofDrawRectangle(0, 40, width, height-80);
 	
 	ofSetLineWidth(5);
 
-
-	for (int i = 0; i < num_of_line; i++) {
-		ofSetColor(255, 255, 255);
-		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
+	if (night_mode_flag != 1) {
+		for (int i = 0; i < num_of_line; i++) {
+			ofSetColor(255, 255, 255);
+			ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
+		}
 	}
-
 	
 	for (int i = 0; i < num_of_line; i++) {
 		ofSetColor(0, 0, 0);
+		if (night_mode_flag) ofSetColor(255, 255, 255);
 		ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
 	}
 
