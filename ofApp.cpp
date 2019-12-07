@@ -2,8 +2,9 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetFrameRate(15); // Limit the speed of our program to 15 frames per second
-    
+    ofSetFrameRate(13); // Limit the speed of our program to 15 frames per second
+	
+
     // We still want to draw on a black background, so we need to draw
     // the background before we do anything with the brush
     ofBackground(255,255,255);
@@ -44,6 +45,11 @@ void ofApp::draw(){
 	}
 	else {
 		ofBackground(255, 255, 255);
+	}
+
+	
+	if (night_mode_flag) {
+		draw_star();
 	}
 
 
@@ -386,6 +392,7 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 	changeLineCoordinate();
 	set_background();
 	
+	
 }
 
 void ofApp::initializeWaterLines() {
@@ -450,6 +457,36 @@ void ofApp::changeLineCoordinate()
 	}
 
 	newLine.end();
+}
+
+void ofApp::draw_star()
+{
+	ofSetLineWidth(1);
+
+	int numLines = 60;
+	int minRadius = 15;
+	int maxRadius = 80;
+	for (int i = 0; i < numLines; i++) {
+
+		// Formula for converting from polar to Cartesian coordinates:
+		//    x = cos(polar angle) * (polar distance)
+		//    y = sin(polar angle) * (polar distance)
+		// We need our angle to be in radians if we want to use sin() or cos()
+		// so we can make use of an openFrameworks function to convert from degrees
+		// to radians
+		float angle = ofRandom(ofDegToRad(360.0));
+		float distance = ofRandom(minRadius, maxRadius);
+		float xOffset = cos(angle) * distance;
+		float yOffset = sin(angle) * distance;
+
+		float alpha = ofMap(distance, minRadius, maxRadius, 50, 0); // Make shorter lines more opaque
+		ofSetColor(255, alpha);
+
+		ofSetLineWidth(ofRandom(1.0, 5.0)); // Remember, this doesn't work on all graphics cards
+		ofDrawLine(50, 254, 50 + xOffset, 254 + yOffset);
+
+	}
+
 }
 
 
