@@ -2,7 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    ofSetFrameRate(13); // Limit the speed of our program to 15 frames per second
+    ofSetFrameRate(10); // Limit the speed of our program to 15 frames per second
 	
 
     // We still want to draw on a black background, so we need to draw
@@ -49,14 +49,17 @@ void ofApp::draw(){
 
 	
 	if (night_mode_flag) {
-		draw_star();
+		draw_star(ofRandom(100, width - 100), ofRandom(40, height - 300));
+		draw_star(60, 120);
+		draw_star(250, 200);
+		draw_star(500, 100);
+		draw_star(900, 150);
 	}
 
 
 	if (draw_flag == 1) {
 
 		ofSetLineWidth(5);
-
 
 		// draw line
 		for (int i = 0; i < num_of_line; i++) {
@@ -459,21 +462,15 @@ void ofApp::changeLineCoordinate()
 	newLine.end();
 }
 
-void ofApp::draw_star()
+void ofApp::draw_star(int x, int y)
 {
 	ofSetLineWidth(1);
 
-	int numLines = 60;
+	int numLines = 50;
 	int minRadius = 15;
 	int maxRadius = 80;
 	for (int i = 0; i < numLines; i++) {
-
-		// Formula for converting from polar to Cartesian coordinates:
-		//    x = cos(polar angle) * (polar distance)
-		//    y = sin(polar angle) * (polar distance)
-		// We need our angle to be in radians if we want to use sin() or cos()
-		// so we can make use of an openFrameworks function to convert from degrees
-		// to radians
+		
 		float angle = ofRandom(ofDegToRad(360.0));
 		float distance = ofRandom(minRadius, maxRadius);
 		float xOffset = cos(angle) * distance;
@@ -483,8 +480,7 @@ void ofApp::draw_star()
 		ofSetColor(255, alpha);
 
 		ofSetLineWidth(ofRandom(1.0, 5.0)); // Remember, this doesn't work on all graphics cards
-		ofDrawLine(50, 254, 50 + xOffset, 254 + yOffset);
-
+		ofDrawLine(x, y, x + xOffset, y+ yOffset);
 	}
 
 }

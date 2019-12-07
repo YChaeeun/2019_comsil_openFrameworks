@@ -63,6 +63,5 @@ class ofApp : public ofBaseApp{
 		int night_mode_flag;
 		int night_twice;
 
-		void draw_star();
-		ofFbo drawStar;
+		void draw_star(int x, int y);
 };
