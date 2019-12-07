@@ -48,4 +48,17 @@ class ofApp : public ofBaseApp{
 		
 		vector<water> waterline;
 
+		ofFbo background;
+		void set_background();
+
+
+		int width;
+		int height;
+		
+		int change_line_flag;
+		int clicked_twice;
+		void changeLineCoordinate();
+		ofFbo newLine;
+		
+
 };

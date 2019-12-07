@@ -4,6 +4,7 @@
 #define MIN(x,y) (((x)<(y))? (x):(y))
 #define MAX(x,y) (((x)>(y))? (x):(y))
 #define IDX(x,y) ((x>y)? 0:2)
+#define CHG_IDX(x,y) ((x>y)? 2:0)
 //#define SLOPE(x1, y1, x2, y2) sqrt(pow(x1-x2,2) + pow(y1-y2,2))
 #define SLOPE(x1,y1,x2,y2)((float)((y1)-(y2))/((x1)-(x2)))
 
@@ -44,14 +45,14 @@ void water::draw()
 	}
 }
 
-void water::computation(int ** line_array, int ** dot_array, int num_of_line, int num_of_dots, int dot_idx)
+void water::computation(int ** line_array, int ** dot_array, int num_of_line, int num_of_dots, int dot_idx, int change_flag)
 {
 
 	int start_x = inter_path[0].x, start_y = inter_path[0].y;
-	cout <<"change"<< start_x << " " << start_y << endl;
 	int inter_idx=1;
 	int nearest_y=9999;
 	int n_idx=0, n_passed=0;
+	int maxidx;
 
 	for (int i = 0; i < num_of_path;i++) {
 
@@ -66,10 +67,15 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 		n_passed = n_idx;
 
 		inter_path[inter_idx].x = start_x;
-		inter_path[inter_idx].y = start_y + distance(line_array[n_idx], start_x, start_y);
+		inter_path[inter_idx].y = start_y + distance(line_array[n_idx], start_x, start_y, change_flag);
 		inter_idx += 1;
 
-		int maxidx = IDX(line_array[n_idx][1], line_array[n_idx][3]);
+		
+		maxidx = IDX(line_array[n_idx][1], line_array[n_idx][3]);
+		
+		if (change_flag)
+			maxidx = CHG_IDX(line_array[n_idx][1], line_array[n_idx][3]);
+
 		start_x = line_array[n_idx][maxidx];
 		start_y = MAX(line_array[n_idx][1], line_array[n_idx][3]);
 		
@@ -82,11 +88,17 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 	calc_path = 1;
 }
 
-int water::distance(int * line_array, int start_x, int start_y)
+int water::distance(int * line_array, int start_x, int start_y, int change_flag)
 {
 	int temp_x = line_array[0], temp_y = line_array[1];
 
 	float slope = SLOPE(line_array[0], line_array[1], line_array[2], line_array[3]);
+
+	if (change_flag) {
+		temp_y = line_array[3];
+		slope = SLOPE(line_array[0], line_array[3], line_array[2], line_array[1]);
+	}
+	
 	float slope_c = temp_y - (slope * temp_x);
 	float start_c = start_y - (slope * start_x);
 	
@@ -123,5 +135,4 @@ void water::reset()
 	local_r = ofRandom(0, 100);
 	local_g = ofRandom(0, 100);
 	local_b = ofRandom(185, 250);
-	
 }
