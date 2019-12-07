@@ -172,6 +172,8 @@ void ofApp::keyPressed(int key){
     }
 	if (key == 'c'){
 		if (!load_flag) return;
+		if (water_fall_flag) return;
+
 		if (clicked_twice == 0) {
 			change_line_flag = 1;
 			clicked_twice = 1;
