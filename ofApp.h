@@ -56,6 +56,7 @@ class ofApp : public ofBaseApp{
 		int height;
 		
 		int change_line_flag;
+		int clicked_twice;
 		void changeLineCoordinate();
 		ofFbo newLine;
 		

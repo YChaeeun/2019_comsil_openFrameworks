@@ -12,7 +12,7 @@ void ofApp::setup(){
 	width = ofGetWidth();
 	height = ofGetHeight();
 
-    
+	clicked_twice = 0;
     draw_flag = 0;
     load_flag = 0;
 	draw_sub_flag = 0;
@@ -139,8 +139,15 @@ void ofApp::keyPressed(int key){
     }
 	if (key == 'c'){
 		if (!load_flag) return;
+		if (clicked_twice == 0) {
+			change_line_flag = 1;
+			clicked_twice = 1;
+		}
+		else {
+			change_line_flag = 0;
+			clicked_twice = 0;
+		}
 
-		change_line_flag = 1;
 		cout << "change_line_flag"<<change_line_flag << endl;
 	}
 }
