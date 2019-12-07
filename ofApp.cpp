@@ -57,22 +57,25 @@ void ofApp::draw(){
 			}
 			ofDrawCircle(dot_array[i][0], dot_array[i][1], 10);
 		}
-	}
-		
-	ofSetLineWidth(5);
-	if (draw_sub_flag) {
-		for (unsigned int i = 0; i < waterline.size(); i++) {
-			if (!waterline[i].calc_path)
-				waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx);
-			waterline[i].draw();
+
+
+		ofSetLineWidth(5);
+		if (draw_sub_flag) {
+			for (unsigned int i = 0; i < waterline.size(); i++) {
+				if (!waterline[i].calc_path)
+					waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx, change_line_flag);
+				waterline[i].draw();
+			}
 		}
-	}
 
-	if (change_line_flag == 1) {
-		ofSetColor(255, 255, 255);
-		newLine.draw(0, 0);
-	}
 
+		if (change_line_flag == 1) {
+			ofSetColor(255, 255, 255);
+			newLine.draw(0, 0);
+		}
+
+	}
+	
 }
 
 //--------------------------------------------------------------
