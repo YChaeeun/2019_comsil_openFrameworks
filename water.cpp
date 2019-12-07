@@ -53,7 +53,7 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 	int nearest_y=9999;
 	int n_idx=0, n_passed=0;
 
-	for (int i = 0; i < num_of_path;i++) {
+	for (int i = 0; i < num_of_line;i++) {
 
 		n_idx = find_nearest(line_array, num_of_line, start_x, start_y);
 		if (n_idx == n_passed) break;

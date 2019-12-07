@@ -49,4 +49,8 @@ class ofApp : public ofBaseApp{
 		vector<water> waterline;
 		int num_of_waterline;
 
+	/* time */
+		unsigned long actualTime, successTime;
+		unsigned int sucessTimeDelta;
+
 };

@@ -14,20 +14,18 @@ void ofApp::setup(){
 	draw_sub_flag = 0;
     dot_diameter = 20.0f;
 	num_of_waterline = 10;
+
+	sucessTimeDelta = 2000; // 2second
+	// https://forum.openframeworks.cc/t/run-after-a-certain-time/27116/3
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	/*
-	ofSetLineWidth(5);
-	if (draw_sub_flag) {
-		for (unsigned int i = 0; i < waterline.size(); i++) {
-			if (!waterline[i].calc_path) waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx);
-			waterline[i].draw();
-		}
+	actualTime = ofGetElapsedTimeMillis();
 
+	if (actualTime - successTime > sucessTimeDelta) {
+		///
 	}
-	*/
 }
 
 //--------------------------------------------------------------
@@ -64,6 +62,7 @@ void ofApp::draw(){
         
         
         // 2nd week portion.
+
         ofSetLineWidth(2);
 		if (draw_sub_flag) {
 			for (unsigned int i = 0; i < waterline.size(); i++) {
@@ -120,6 +119,8 @@ void ofApp::keyPressed(int key){
 
 		draw_sub_flag = 1;
 		water_fall_flag = 1;
+
+		successTime = ofGetElapsedTimeMillis();
     }
     if (key == 'e'){
         // 2nd week portion.
