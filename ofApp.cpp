@@ -69,6 +69,7 @@ void ofApp::draw(){
 	}
 
 	if (change_line_flag == 1) {
+		ofSetColor(255, 255, 255);
 		newLine.draw(0, 0);
 	}
 
@@ -371,12 +372,14 @@ void ofApp::set_background()
 	background.begin();
 	ofClear(240, 255, 255, 0);
 
-	ofSetColor(127, 23, 31);  // Set the drawing color to brown
 	ofSetLineWidth(5);
 
 	for (int i = 0; i < num_of_line; i++) {
+		
 		ofSetColor(0, 0, 0);
 		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
+		
+		
 	}
 
 	background.end();
@@ -386,11 +389,20 @@ void ofApp::changeLineCoordinate()
 {
 	newLine.allocate(width, height);
 	newLine.begin();
-
-	ofSetColor(127, 23, 31);  // Set the drawing color to brown
+	//ofClear(255, 255, 255, 0);
+	
+	//ofSetColor(0xffffff);  // Set the drawing color to brown
+	//ofDrawRectangle(0, 40, width, height-80);
+	
 	ofSetLineWidth(5);
 
 
+	for (int i = 0; i < num_of_line; i++) {
+		ofSetColor(255, 255, 255);
+		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
+	}
+
+	
 	for (int i = 0; i < num_of_line; i++) {
 		ofSetColor(0, 0, 0);
 		ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);

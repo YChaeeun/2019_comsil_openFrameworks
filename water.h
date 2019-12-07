@@ -21,7 +21,7 @@ public:
 
 	float local_r, local_g, local_b;
 	int target_1, target_2;
-
+	
 
 	coordinate* inter_path;
 	int num_of_path;
