@@ -123,5 +123,4 @@ void water::reset()
 	local_r = ofRandom(0, 100);
 	local_g = ofRandom(0, 100);
 	local_b = ofRandom(185, 250);
-	
 }
