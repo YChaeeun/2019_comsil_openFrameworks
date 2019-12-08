@@ -91,9 +91,8 @@ void ofApp::draw(){
 			}
 		}
 
-
 		// water fall
-		ofSetLineWidth(5);
+		ofSetLineWidth(3);
 		if (draw_sub_flag) {
 			for (unsigned int i = 0; i < waterline.size(); i++) {
 				if (!waterline[i].calc_path)
@@ -401,11 +400,11 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 }
 
 void ofApp::initializeWaterLines() {
-	int num = 50;
+	int num = 8;
 	int local_x, local_y;
 
 	if (waterline.empty()) {
-		waterline.assign(50, water(num_of_line));
+		waterline.assign(num, water(num_of_line));
 	}
 	
 	// find (x,y) of selected dot
@@ -419,7 +418,7 @@ void ofApp::initializeWaterLines() {
 	cout << "water dot_idx" << dot_idx;
 
 	// starting point (x,y)
-	for (int i = 0; i < 50; i++) {
+	for (int i = 0; i < num; i++) {
 		waterline[i].inter_path[0].x = local_x;
 		waterline[i].inter_path[0].y = local_y;
 	}

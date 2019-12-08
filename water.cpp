@@ -37,19 +37,17 @@ void water::draw()
 	
 	if (calc_path) {
 
-		int numRects = 10;
 		for (int i = 0; i < num_of_path - 1; i++) {
-
-			ofSetColor(local_r, local_g, local_b);
-			float width = ofRandom(5, 10);
-			float height = ofRandom(5, 15);
-			float xOffset = ofRandom(-30, 30);
+			
+			float radius = ofRandom(-10, 10);
+			float xOffset = ofRandom(-25, 25);
 			float yOffset = ofRandom(-30, 20);
-			if (inter_path[i].x < ofGetWidth() && width < ofGetWidth() && inter_path[i].y < ofGetHeight() && height < ofGetHeight()) {
+			float width = ofRandom(6, 12);
+
+			if (inter_path[i].x < ofGetWidth() && width < ofGetWidth() && inter_path[i].y < ofGetHeight() && radius < ofGetHeight()) {
 				
-				//ofDrawRectangle(inter_path[i+1].x + xOffset, inter_path[i+1].y + yOffset, width, height);
-				ofDrawCircle(inter_path[i + 1].x + xOffset, inter_path[i + 1].y + yOffset, width);
-				ofDrawLine(inter_path[i].x, inter_path[i].y, inter_path[i + 1].x, inter_path[i + 1].y);
+				ofDrawLine(inter_path[i].x + radius, inter_path[i].y, inter_path[i + 1].x + radius, inter_path[i + 1].y);
+				ofDrawCircle(inter_path[i + 1].x + xOffset, inter_path[i + 1].y + yOffset, width);				
 			}
 		}
 	}
