@@ -13,6 +13,8 @@ void ofApp::setup(){
 	width = ofGetWidth();
 	height = ofGetHeight();
 
+	num_of_water_line = 10;
+
 	clicked_twice = 0;
     draw_flag = 0;
     load_flag = 0;
@@ -24,16 +26,6 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	/*
-	ofSetLineWidth(5);
-	if (draw_sub_flag) {
-		for (unsigned int i = 0; i < waterline.size(); i++) {
-			if (!waterline[i].calc_path) waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx);
-			waterline[i].draw();
-		}
-
-	}
-	*/
 }
 
 //--------------------------------------------------------------
@@ -108,8 +100,6 @@ void ofApp::draw(){
 	// Draw shapes for ceiling and floor
 	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
 	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
-	ofSetLineWidth(5);
-	
 }
 
 //--------------------------------------------------------------
@@ -143,11 +133,7 @@ void ofApp::keyPressed(int key){
     if (key == 'd'){
         if(!load_flag) return;
         
-		draw_flag = 1;
-		cout << draw_flag << endl;
-        /* COMSIL1-TODO 2: This is draw control part.
-        You should draw only after when the key 'd' has been pressed.
-        */
+		draw_flag = 1;       
     }
     if (key == 's'){
         // water path computation
@@ -160,7 +146,7 @@ void ofApp::keyPressed(int key){
 		water_fall_flag = 1;
     }
     if (key == 'e'){
-        // 2nd week portion.
+        
 		draw_sub_flag = 0;
 		water_fall_flag = 0;
 
@@ -181,8 +167,6 @@ void ofApp::keyPressed(int key){
 			change_line_flag = 0;
 			clicked_twice = 0;
 		}
-
-		cout << "change_line_flag"<<change_line_flag << endl;
 	}
 	if (key == 'n') {
 		if (!load_flag) return;
@@ -197,10 +181,8 @@ void ofApp::keyPressed(int key){
 	}
 }
 
-//--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     if( key == 'l'){
-		cout << "load flag = 1" << endl;
         // Open the Open File Dialog
         ofFileDialogResult openFileResult= ofSystemLoadDialog("Select a only txt for Waterfall");
         
@@ -214,21 +196,16 @@ void ofApp::keyReleased(int key){
         }
     }
     
-    /* COMSIL1-TODO 4: This is selection dot control part.
-     You can select dot in which water starts to flow by left, right direction key (<- , ->).
-     */
 	if (!water_fall_flag) {
 		if (key == OF_KEY_RIGHT) {
 			dot_idx++;
 			if (dot_idx >= num_of_dot)
 				dot_idx = 0;
-			cout << "Selcted Dot Coordinate is (" << dot_idx<<", " << ")" << endl;
 		}
 		if (key == OF_KEY_LEFT) {
 			dot_idx--;
 			if (dot_idx < 0)
 				dot_idx = num_of_dot - 1;
-			cout << "Selcted Dot Coordinate is (" <<dot_idx<< ", " << ")" << endl;
 		}
 	}
     
@@ -297,15 +274,7 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
      */
     int input_type = 0;
 	int lineN = 0, dotN = 0;
-    
-    /* COMSIL1-TODO 1 : Below code is for getting the number of line and dot, getting coordinates.
-     You must maintain those information. But, currently below code is not complete.
-     Also, note that all of coordinate should not be out of screen size.
-     However, all of coordinate do not always turn out to be the case.
-     So, You have to develop some error handling code that can detect whether coordinate is out of screen size.
-    */
-	
-    
+      
     // Read file line by line
     for (ofBuffer::Line it = buffer.getLines().begin(), end = buffer.getLines().end(); it != end; ++it) {
         string line = *it;
@@ -316,7 +285,6 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
         if( words.size() == 1){
             if( input_type == 0){ // Input for the number of lines.
                 num_of_line = atoi(words[0].c_str());
-                cout << "The number of line is: " << num_of_line << endl;
 
 				line_array = new int*[num_of_line];
 				for (int i = 0; i < num_of_line; i++) {
@@ -325,7 +293,6 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
             }
             else{ // Input for the number of dots.
                 num_of_dot = atoi(words[0].c_str());
-                cout << "The number of dot is: " << num_of_dot << endl;
 
 				dot_array = new int*[num_of_dot];
 				for (int i = 0; i < num_of_dot; i++) {
@@ -341,35 +308,18 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 				x2 = atoi(words[2].c_str());
 				y2 = atoi(words[3].c_str());
 
-				cout << "line: " << x1 << ' ' << y1 << ' ' << x2 << ' ' << y2 << endl;
-				cout << "lineN" << lineN << endl;
+				if (x2 < 0 || x2 > ofGetWidth()) return;
 
-				if (x2 < 0 || x2 > ofGetWidth()) {
-					return;
-				}
-
-				if (y2 < 0 || y2 > ofGetHeight()) {
-					return;
-				}
-
-
+				if (y2 < 0 || y2 > ofGetHeight()) return;
 			}
 			else { // Input for actual information of dots.
 				x1 = atoi(words[0].c_str());
 				y1 = atoi(words[1].c_str());
-
-				cout << "dots: " << x1 << ' ' << y1 << endl;
-
 			}
 
-			if (x1 < 0 || x1 > ofGetWidth()) {
-				return;
-			}
+			if (x1 < 0 || x1 > ofGetWidth()) return;
 
-			if (y1 < 0 || y1 > ofGetHeight()) {
-				return;
-			}
-
+			if (y1 < 0 || y1 > ofGetHeight()) return;
 
 			if (input_type == 0) {
 				line_array[lineN][0] = x1;
@@ -384,7 +334,6 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 				dotN += 1;
 			}
 
-
 			if (lineN > num_of_line - 1) {
 				input_type = 1;
 			}
@@ -395,16 +344,13 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
     initializeWaterLines();
 	changeLineCoordinate();
 	set_background();
-	
-	
 }
 
 void ofApp::initializeWaterLines() {
-	int num = 8;
 	int local_x, local_y;
 
 	if (waterline.empty()) {
-		waterline.assign(num, water(num_of_line));
+		waterline.assign(num_of_water_line, water(num_of_line));
 	}
 	
 	// find (x,y) of selected dot
@@ -415,10 +361,9 @@ void ofApp::initializeWaterLines() {
 			break;
 		}
 	}
-	cout << "water dot_idx" << dot_idx;
 
 	// starting point (x,y)
-	for (int i = 0; i < num; i++) {
+	for (int i = 0; i < num_of_water_line; i++) {
 		waterline[i].inter_path[0].x = local_x;
 		waterline[i].inter_path[0].y = local_y;
 	}
@@ -483,7 +428,6 @@ void ofApp::draw_star(int x, int y)
 		ofSetLineWidth(ofRandom(1.0, 5.0)); // Remember, this doesn't work on all graphics cards
 		ofDrawLine(x, y, x + xOffset, y+ yOffset);
 	}
-
 }
 
 

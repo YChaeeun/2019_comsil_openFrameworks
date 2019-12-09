@@ -5,7 +5,6 @@
 #define MAX(x,y) (((x)>(y))? (x):(y))
 #define IDX(x,y) ((x>y)? 0:2)
 #define CHG_IDX(x,y) ((x>y)? 2:0)
-//#define SLOPE(x1, y1, x2, y2) sqrt(pow(x1-x2,2) + pow(y1-y2,2))
 #define SLOPE(x1,y1,x2,y2)((float)((y1)-(y2))/((x1)-(x2)))
 
 water::water(int num_of_line)
@@ -19,7 +18,6 @@ water::water(int num_of_line)
 	}
 	
 	calc_path = 0;
-
 }
 
 water::~water()
@@ -27,7 +25,6 @@ water::~water()
 	if (!inter_path) {
 		free(inter_path);
 	}
-
 }
 
 void water::draw()
@@ -36,7 +33,6 @@ void water::draw()
 	ofSetColor(local_r, local_g, local_b);
 	
 	if (calc_path) {
-
 		for (int i = 0; i < num_of_path - 1; i++) {
 			
 			float radius = ofRandom(-10, 10);
@@ -45,7 +41,6 @@ void water::draw()
 			float width = ofRandom(6, 12);
 
 			if (inter_path[i].x < ofGetWidth() && width < ofGetWidth() && inter_path[i].y < ofGetHeight() && radius < ofGetHeight()) {
-				
 				ofDrawLine(inter_path[i].x + radius, inter_path[i].y, inter_path[i + 1].x + radius, inter_path[i + 1].y);
 				ofDrawCircle(inter_path[i + 1].x + xOffset, inter_path[i + 1].y + yOffset, width);				
 			}
@@ -55,7 +50,6 @@ void water::draw()
 
 void water::computation(int ** line_array, int ** dot_array, int num_of_line, int num_of_dots, int dot_idx, int change_flag)
 {
-
 	int start_x = inter_path[0].x, start_y = inter_path[0].y;
 	int inter_idx=1;
 	int nearest_y=9999;
@@ -63,7 +57,6 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 	int maxidx;
 
 	for (int i = 0; i < num_of_path;i++) {
-
 		n_idx = find_nearest(line_array, num_of_line, start_x, start_y);
 		if (n_idx == n_passed) break;
 		if (n_idx == -1) {
@@ -77,7 +70,6 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 		inter_path[inter_idx].x = start_x;
 		inter_path[inter_idx].y = start_y + distance(line_array[n_idx], start_x, start_y, change_flag);
 		inter_idx += 1;
-
 		
 		maxidx = IDX(line_array[n_idx][1], line_array[n_idx][3]);
 		
@@ -90,7 +82,6 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 		inter_path[inter_idx].x = start_x;
 		inter_path[inter_idx].y = start_y;
 		inter_idx += 1;
-
 	}
 
 	calc_path = 1;
@@ -99,7 +90,6 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 int water::distance(int * line_array, int start_x, int start_y, int change_flag)
 {
 	int temp_x = line_array[0], temp_y = line_array[1];
-
 	float slope = SLOPE(line_array[0], line_array[1], line_array[2], line_array[3]);
 
 	if (change_flag) {
@@ -128,13 +118,6 @@ int water::find_nearest(int ** line_array, int num_of_line, int start_x, int sta
 		}
 	}
 	return n_idx;
-}
-
-void water::update()
-{
-	for (int i = 0; i < num_of_path; i++) {
-		inter_path[i].x = inter_path[i].y = -1;
-	}
 }
 
 void water::reset()

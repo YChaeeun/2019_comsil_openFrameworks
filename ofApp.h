@@ -38,7 +38,7 @@ class ofApp : public ofBaseApp{
     /* WaterFall-related member functions */
     
 		void processOpenFileSelection(ofFileDialogResult openFileResult);
-		void initializeWaterLines(); // 2nd week portion.
+		void initializeWaterLines();
 
 
 		int** line_array;
@@ -47,6 +47,7 @@ class ofApp : public ofBaseApp{
 		int dot_idx=0;
 		
 		vector<water> waterline;
+		int num_of_water_line;
 
 		ofFbo background;
 		void set_background();
