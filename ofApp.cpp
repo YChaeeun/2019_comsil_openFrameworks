@@ -3,11 +3,16 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(10); // Limit the speed of our program to 15 frames per second
-    ofBackground(255,255,255);
-
+    
 // background
 	width = ofGetWidth();
 	height = ofGetHeight();
+
+	white.set(255, 255, 255);
+	black.set(0, 0, 0);
+	brown.set(127, 23, 31);
+
+	ofBackground(white);
 
 // variables _num
 	dot_idx = 0;
@@ -39,7 +44,7 @@ void ofApp::update(){
 void ofApp::draw(){
 
 	if (night_mode_flag) {
-		ofBackground(0, 0, 0);
+		ofBackground(black);
 
 		drawStar(ofRandom(100, width - 100), ofRandom(40, height - 300));
 		drawStar(60, 120);
@@ -48,10 +53,10 @@ void ofApp::draw(){
 		drawStar(900, 150);
 	}
 	else {
-		ofBackground(255, 255, 255);
+		ofBackground(white);
 	}
 
-	if (draw_flag == 1) {
+	if (draw_flag) {
 		drawLine();
 		drawDots();
 
@@ -64,7 +69,7 @@ void ofApp::draw(){
 		}
 	}
 
-	ofSetColor(127, 23, 31);  // Set the drawing color to brown
+	ofSetColor(brown);
 	background.draw(0, 0);
 }
 
@@ -305,9 +310,9 @@ void ofApp::drawLine()
 {
 	ofSetLineWidth(5);
 	for (int i = 0; i < num_of_line; i++) {
-		ofSetColor(0, 0, 0);
-		if (night_mode_flag || change_line_flag) ofSetColor(255, 255, 255);
-		if (night_mode_flag && change_line_flag) ofSetColor(0, 0, 0);
+		ofSetColor(black);
+		if (night_mode_flag || change_line_flag) ofSetColor(white);
+		if (night_mode_flag && change_line_flag) ofSetColor(black);
 		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
 	}
 }
@@ -319,8 +324,8 @@ void ofApp::drawDots()
 			ofSetColor(255, 0, 0);
 		}
 		else {
-			ofSetColor(0, 0, 0);
-			if (night_mode_flag) ofSetColor(255, 255, 255);
+			ofSetColor(black);
+			if (night_mode_flag) ofSetColor(white);
 		}
 		ofDrawCircle(dot_array[i][0], dot_array[i][1], 10);
 	}
@@ -354,7 +359,6 @@ void ofApp::checkTwice(int& check, int& flag)
 	else {
 		check = flag = 1;
 	}
-
 }
 
 void ofApp::setBackground()
@@ -371,9 +375,9 @@ void ofApp::setBackground()
 void ofApp::changeLine()
 {
 	for (int i = 0; i < num_of_line; i++) {
-		ofSetColor(255, 255, 255);
-		if (night_mode_flag || change_line_flag) ofSetColor(0, 0, 0);
-		if (night_mode_flag && change_line_flag) ofSetColor(255, 255, 255);
+		ofSetColor(white);
+		if (night_mode_flag || change_line_flag) ofSetColor(black);
+		if (night_mode_flag && change_line_flag) ofSetColor(white);
 		ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
 	}
 }

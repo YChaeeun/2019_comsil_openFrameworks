@@ -26,7 +26,12 @@ class ofApp : public ofBaseApp {
 	/* ------------------ Background ------------------*/
 		int width;
 		int height;
+
 		ofFbo background;
+
+		ofColor white;
+		ofColor black;
+		ofColor brown;
 
 		void setBackground();
 
