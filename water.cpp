@@ -3,8 +3,10 @@
 #include <cstdlib>
 #define MIN(x,y) (((x)<(y))? (x):(y))
 #define MAX(x,y) (((x)>(y))? (x):(y))
+
 #define IDX(x,y) ((x>y)? 0:2)
 #define CHG_IDX(x,y) ((x>y)? 2:0)
+
 #define SLOPE(x1,y1,x2,y2)((float)((y1)-(y2))/((x1)-(x2)))
 
 water::water(int num_of_line)
@@ -17,7 +19,7 @@ water::water(int num_of_line)
 		}
 	}
 	
-	calc_path = 0;
+	calc_path_flag = 0;
 }
 
 water::~water()
@@ -32,7 +34,7 @@ void water::draw()
 	reset();
 	ofSetColor(local_r, local_g, local_b);
 	
-	if (calc_path) {
+	if (calc_path_flag) {
 		for (int i = 0; i < num_of_path - 1; i++) {
 			
 			float radius = ofRandom(-10, 10);
@@ -52,7 +54,6 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 {
 	int start_x = inter_path[0].x, start_y = inter_path[0].y;
 	int inter_idx=1;
-	int nearest_y=9999;
 	int n_idx=0, n_passed=0;
 	int maxidx;
 
@@ -84,7 +85,7 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 		inter_idx += 1;
 	}
 
-	calc_path = 1;
+	calc_path_flag = 1;
 }
 
 int water::distance(int * line_array, int start_x, int start_y, int change_flag)

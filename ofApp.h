@@ -4,7 +4,7 @@
 #include <vector>
 #include "water.h"
 
-class ofApp : public ofBaseApp{
+class ofApp : public ofBaseApp {
 
 	public:
 		void setup();
@@ -22,47 +22,46 @@ class ofApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-    
-    /* WaterFall-related member variables Regions */
-    
-    // flag variables
+
+	/* ------------------ Background ------------------*/
+		int width;
+		int height;
+		ofFbo background;
+
+		void set_background();
+		
+
+    /* ------------------ WATER FALL BASIC ------------------*/
+	// flag variables
 		int draw_flag;
 		int load_flag;
 		int draw_sub_flag;
 		int water_fall_flag;
-    
-    // Line segment and dot related variables
+
+	// Line segment and dot related variables
 		int num_of_line, num_of_dot;
 		float dot_diameter;
-    
-    /* WaterFall-related member functions */
-    
-		void processOpenFileSelection(ofFileDialogResult openFileResult);
-		void initializeWaterLines();
-
+		int dot_idx;
 
 		int** line_array;
 		int** dot_array;
 
-		int dot_idx=0;
-		
-		vector<water> waterline;
 		int num_of_water_line;
-
-		ofFbo background;
-		void set_background();
-
-
-		int width;
-		int height;
+		vector<water> waterline;
+    
+	// member function
+		void processOpenFileSelection(ofFileDialogResult openFileResult);
+		void initializeWaterLines();
 		
+
+	/* ------------------ CHANGE LINE MODE ------------------*/
 		int change_line_flag;
-		int clicked_twice;
-		void changeLineCoordinate();
-		ofFbo newLine;
-		
+		int change_twice;
+
+
+	/* --------------------- NIGHT MODE ---------------------*/
 		int night_mode_flag;
 		int night_twice;
-
+		
 		void draw_star(int x, int y);
 };

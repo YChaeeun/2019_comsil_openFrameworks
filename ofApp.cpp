@@ -15,13 +15,17 @@ void ofApp::setup(){
 
 	num_of_water_line = 10;
 
-	clicked_twice = 0;
+	dot_idx = 0;
+
+	change_twice = 0;
     draw_flag = 0;
     load_flag = 0;
 	draw_sub_flag = 0;
 	change_line_flag = 0;
 	night_mode_flag = 0;
     dot_diameter = 20.0f;
+
+	set_background();
 }
 
 //--------------------------------------------------------------
@@ -87,19 +91,15 @@ void ofApp::draw(){
 		ofSetLineWidth(3);
 		if (draw_sub_flag) {
 			for (unsigned int i = 0; i < waterline.size(); i++) {
-				if (!waterline[i].calc_path)
+				if (!waterline[i].calc_path_flag)
 					waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx, change_line_flag);
 				waterline[i].draw();
 			}
 		}
-
 	}
 
 	ofSetColor(127, 23, 31);  // Set the drawing color to brown
-
-	// Draw shapes for ceiling and floor
-	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
-	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
+	background.draw(0, 0);
 }
 
 //--------------------------------------------------------------
@@ -136,22 +136,18 @@ void ofApp::keyPressed(int key){
 		draw_flag = 1;       
     }
     if (key == 's'){
-        // water path computation
 		if (!load_flag) return;
-		if (!water_fall_flag) {
-			initializeWaterLines();
-		}
+		if (!water_fall_flag) initializeWaterLines();
 
 		draw_sub_flag = 1;
 		water_fall_flag = 1;
     }
     if (key == 'e'){
-        
 		draw_sub_flag = 0;
 		water_fall_flag = 0;
 
 		for (unsigned int i = 0; i < waterline.size(); i++) {
-			waterline[i].calc_path = 0;
+			waterline[i].calc_path_flag = 0;
 			waterline[i].inter_path[i].x = waterline[i].inter_path[i].y = -1;
 		}
     }
@@ -159,13 +155,13 @@ void ofApp::keyPressed(int key){
 		if (!load_flag) return;
 		if (water_fall_flag) return;
 
-		if (clicked_twice == 0) {
+		if (change_twice == 0) {
 			change_line_flag = 1;
-			clicked_twice = 1;
+			change_twice = 1;
 		}
 		else {
 			change_line_flag = 0;
-			clicked_twice = 0;
+			change_twice = 0;
 		}
 	}
 	if (key == 'n') {
@@ -208,7 +204,6 @@ void ofApp::keyReleased(int key){
 				dot_idx = num_of_dot - 1;
 		}
 	}
-    
 }
 
 //--------------------------------------------------------------
@@ -267,11 +262,7 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
     else cout << "We found the target file." << endl;
     
     ofBuffer buffer(file);
-    
-    /* This variable is for indicating which type of input is being received.
-     IF input_type == 0, then work of getting line input is in progress.
-     IF input_type == 1, then work of getting dot input is in progress.
-     */
+   
     int input_type = 0;
 	int lineN = 0, dotN = 0;
       
@@ -342,8 +333,6 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
     } // End of for-loop (Read file line by line).
     
     initializeWaterLines();
-	changeLineCoordinate();
-	set_background();
 }
 
 void ofApp::initializeWaterLines() {
@@ -369,43 +358,16 @@ void ofApp::initializeWaterLines() {
 	}
 }
 
-
 void ofApp::set_background()
 {
 	background.allocate(width, height);
 	background.begin();
 
-	ofSetLineWidth(5);
-
-	for (int i = 0; i < num_of_line; i++) {
-		ofSetColor(0, 0, 0);
-		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
-	}
+	// Draw shapes for ceiling and floor
+	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
+	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
 
 	background.end();
-}
-
-void ofApp::changeLineCoordinate()
-{
-	newLine.allocate(width, height);
-	newLine.begin();
-	
-	ofSetLineWidth(5);
-
-	if (night_mode_flag != 1) {
-		for (int i = 0; i < num_of_line; i++) {
-			ofSetColor(255, 255, 255);
-			ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
-		}
-	}
-	
-	for (int i = 0; i < num_of_line; i++) {
-		ofSetColor(0, 0, 0);
-		if (night_mode_flag) ofSetColor(255, 255, 255);
-		ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
-	}
-
-	newLine.end();
 }
 
 void ofApp::draw_star(int x, int y)
