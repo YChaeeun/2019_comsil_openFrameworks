@@ -36,11 +36,19 @@ void water::draw()
 	ofSetColor(local_r, local_g, local_b);
 	
 	if (calc_path) {
+
 		for (int i = 0; i < num_of_path - 1; i++) {
-			if (inter_path[i].x < ofGetWidth() && inter_path[i].y < ofGetHeight()) {
-				ofDrawLine(inter_path[i].x, inter_path[i].y, inter_path[i + 1].x, inter_path[i + 1].y);
-			}
 			
+			float radius = ofRandom(-10, 10);
+			float xOffset = ofRandom(-25, 25);
+			float yOffset = ofRandom(-30, 20);
+			float width = ofRandom(6, 12);
+
+			if (inter_path[i].x < ofGetWidth() && width < ofGetWidth() && inter_path[i].y < ofGetHeight() && radius < ofGetHeight()) {
+				
+				ofDrawLine(inter_path[i].x + radius, inter_path[i].y, inter_path[i + 1].x + radius, inter_path[i + 1].y);
+				ofDrawCircle(inter_path[i + 1].x + xOffset, inter_path[i + 1].y + yOffset, width);				
+			}
 		}
 	}
 }
@@ -101,7 +109,6 @@ int water::distance(int * line_array, int start_x, int start_y, int change_flag)
 	
 	float slope_c = temp_y - (slope * temp_x);
 	float start_c = start_y - (slope * start_x);
-	
 	return (int)(slope_c - start_c);
 }
 
