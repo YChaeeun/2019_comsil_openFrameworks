@@ -58,7 +58,7 @@ void water::computation(int ** line_array, int ** dot_array, int num_of_line, in
 	int maxidx;
 
 	for (int i = 0; i < num_of_path;i++) {
-		n_idx = find_nearest(line_array, num_of_line, start_x, start_y);
+		n_idx = findNearestLine(line_array, num_of_line, start_x, start_y);
 		if (n_idx == n_passed) break;
 		if (n_idx == -1) {
 			inter_path[inter_idx].x = start_x;
@@ -103,7 +103,7 @@ int water::distance(int * line_array, int start_x, int start_y, int change_flag)
 	return (int)(slope_c - start_c);
 }
 
-int water::find_nearest(int ** line_array, int num_of_line, int start_x, int start_y)
+int water::findNearestLine(int** line_array, int num_of_line, int start_x, int start_y)
 {
 	int nearest_y = 100000;
 	int n_idx = -1;

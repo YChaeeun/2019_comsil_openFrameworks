@@ -3,29 +3,32 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofSetFrameRate(10); // Limit the speed of our program to 15 frames per second
-	
-
-    // We still want to draw on a black background, so we need to draw
-    // the background before we do anything with the brush
     ofBackground(255,255,255);
-    ofSetLineWidth(4);
 
+// background
 	width = ofGetWidth();
 	height = ofGetHeight();
 
+// variables _num
+	dot_idx = 0;
+	dot_diameter = 20.0f;
+
 	num_of_water_line = 10;
 
-	dot_idx = 0;
-
-	change_twice = 0;
+// flag
+	load_flag = 0;
     draw_flag = 0;
-    load_flag = 0;
 	draw_sub_flag = 0;
+
 	change_line_flag = 0;
 	night_mode_flag = 0;
-    dot_diameter = 20.0f;
 
-	set_background();
+	fall_twice = 0;
+	change_twice = 0;
+	night_twice = 0;
+
+// function
+	setBackground();
 }
 
 //--------------------------------------------------------------
@@ -35,66 +38,29 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-
 	if (night_mode_flag) {
 		ofBackground(0, 0, 0);
+
+		drawStar(ofRandom(100, width - 100), ofRandom(40, height - 300));
+		drawStar(60, 120);
+		drawStar(250, 200);
+		drawStar(500, 100);
+		drawStar(900, 150);
 	}
 	else {
 		ofBackground(255, 255, 255);
 	}
 
-	
-	if (night_mode_flag) {
-		draw_star(ofRandom(100, width - 100), ofRandom(40, height - 300));
-		draw_star(60, 120);
-		draw_star(250, 200);
-		draw_star(500, 100);
-		draw_star(900, 150);
-	}
-
-
 	if (draw_flag == 1) {
+		drawLine();
+		drawDots();
 
-		ofSetLineWidth(5);
-
-		// draw line
-		for (int i = 0; i < num_of_line; i++) {
-			ofSetColor(0, 0, 0);
-			if (night_mode_flag || change_line_flag) ofSetColor(255, 255, 255);
-			if (night_mode_flag && change_line_flag) ofSetColor(0, 0, 0);
-			ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
-		}
-
-		// draw dots
-		for (int i = 0; i < num_of_dot; i++) {
-			if (i == dot_idx) {
-				ofSetColor(255, 0, 0);
-			}
-			else {
-				ofSetColor(0, 0, 0);
-				if (night_mode_flag) ofSetColor(255, 255, 255);
-			}
-			ofDrawCircle(dot_array[i][0], dot_array[i][1], 10);
-		}
-
-		// change_line_mode
 		if (change_line_flag) {
-			for (int i = 0; i < num_of_line; i++) {
-				ofSetColor(255, 255, 255);
-				if (night_mode_flag || change_line_flag) ofSetColor(0, 0, 0);
-				if (night_mode_flag && change_line_flag) ofSetColor(255, 255, 255);
-				ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
-			}
+			changeLine();
 		}
-
-		// water fall
-		ofSetLineWidth(3);
+		
 		if (draw_sub_flag) {
-			for (unsigned int i = 0; i < waterline.size(); i++) {
-				if (!waterline[i].calc_path_flag)
-					waterline[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx, change_line_flag);
-				waterline[i].draw();
-			}
+			drawWaterStream();
 		}
 	}
 
@@ -110,17 +76,13 @@ void ofApp::keyPressed(int key){
         ofSaveScreen("savedScreenshot_"+ofGetTimestampString()+".png");
     }
     if (key == 'q'){
-        // Reset flags
         draw_flag = 0;
         
-        // Free the dynamically allocated memory exits.
-		
 		for (int i = 0; i < num_of_line; i++) {
 			delete line_array[i];
 		}
 		delete line_array;
 
-		
 		for (int i = 0; i < num_of_dot; i++) {
 			delete dot_array[i];
 		}
@@ -139,41 +101,18 @@ void ofApp::keyPressed(int key){
 		if (!load_flag) return;
 		if (!water_fall_flag) initializeWaterLines();
 
-		draw_sub_flag = 1;
-		water_fall_flag = 1;
+		checkTwice(fall_twice, water_fall_flag, draw_sub_flag);
     }
     if (key == 'e'){
-		draw_sub_flag = 0;
-		water_fall_flag = 0;
-
-		for (unsigned int i = 0; i < waterline.size(); i++) {
-			waterline[i].calc_path_flag = 0;
-			waterline[i].inter_path[i].x = waterline[i].inter_path[i].y = -1;
-		}
-    }
-	if (key == 'c'){
 		if (!load_flag) return;
 		if (water_fall_flag) return;
 
-		if (change_twice == 0) {
-			change_line_flag = 1;
-			change_twice = 1;
-		}
-		else {
-			change_line_flag = 0;
-			change_twice = 0;
-		}
-	}
+		checkTwice(change_twice, change_line_flag);
+    }
 	if (key == 'n') {
 		if (!load_flag) return;
-		if (night_twice) {
-			night_mode_flag = 0;
-			night_twice = 0;
-		}
-		else {
-			night_mode_flag = 1;
-			night_twice = 1;
-		}
+
+		checkTwice(night_twice, night_mode_flag);
 	}
 }
 
@@ -274,7 +213,7 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
         vector<string> words = ofSplitString(line, " ");
 		
         if( words.size() == 1){
-            if( input_type == 0){ // Input for the number of lines.
+            if( !input_type){ // Input for the number of lines.
                 num_of_line = atoi(words[0].c_str());
 
 				line_array = new int*[num_of_line];
@@ -293,14 +232,13 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
         }
 		else if (words.size() >= 2) {
 			int x1, y1, x2, y2;
-			if (input_type == 0) { // Input for actual information of lines
+			if (!input_type) { // Input for actual information of lines
 				x1 = atoi(words[0].c_str());
 				y1 = atoi(words[1].c_str());
 				x2 = atoi(words[2].c_str());
 				y2 = atoi(words[3].c_str());
 
 				if (x2 < 0 || x2 > ofGetWidth()) return;
-
 				if (y2 < 0 || y2 > ofGetHeight()) return;
 			}
 			else { // Input for actual information of dots.
@@ -309,10 +247,9 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 			}
 
 			if (x1 < 0 || x1 > ofGetWidth()) return;
-
 			if (y1 < 0 || y1 > ofGetHeight()) return;
 
-			if (input_type == 0) {
+			if (!input_type) {
 				line_array[lineN][0] = x1;
 				line_array[lineN][1] = y1;
 				line_array[lineN][2] = x2;
@@ -338,10 +275,16 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 void ofApp::initializeWaterLines() {
 	int local_x, local_y;
 
-	if (waterline.empty()) {
-		waterline.assign(num_of_water_line, water(num_of_line));
+	if (water_line.empty()) {
+		water_line.assign(num_of_water_line, water(num_of_line));
 	}
-	
+	else {
+		for (unsigned int i = 0; i < water_line.size(); i++) {
+			water_line[i].calc_path_flag = 0;
+			water_line[i].inter_path[i].x = water_line[i].inter_path[i].y = -1;
+		}
+	}
+
 	// find (x,y) of selected dot
 	for (int i = 0; i < num_of_dot; i++) {
 		if (i == dot_idx) {
@@ -353,24 +296,89 @@ void ofApp::initializeWaterLines() {
 
 	// starting point (x,y)
 	for (int i = 0; i < num_of_water_line; i++) {
-		waterline[i].inter_path[0].x = local_x;
-		waterline[i].inter_path[0].y = local_y;
+		water_line[i].inter_path[0].x = local_x;
+		water_line[i].inter_path[0].y = local_y;
 	}
 }
 
-void ofApp::set_background()
+void ofApp::drawLine()
+{
+	ofSetLineWidth(5);
+	for (int i = 0; i < num_of_line; i++) {
+		ofSetColor(0, 0, 0);
+		if (night_mode_flag || change_line_flag) ofSetColor(255, 255, 255);
+		if (night_mode_flag && change_line_flag) ofSetColor(0, 0, 0);
+		ofDrawLine(line_array[i][0], line_array[i][1], line_array[i][2], line_array[i][3]);
+	}
+}
+
+void ofApp::drawDots()
+{
+	for (int i = 0; i < num_of_dot; i++) {
+		if (i == dot_idx) {
+			ofSetColor(255, 0, 0);
+		}
+		else {
+			ofSetColor(0, 0, 0);
+			if (night_mode_flag) ofSetColor(255, 255, 255);
+		}
+		ofDrawCircle(dot_array[i][0], dot_array[i][1], 10);
+	}
+}
+
+void ofApp::drawWaterStream()
+{
+	ofSetLineWidth(3);
+	for (unsigned int i = 0; i < water_line.size(); i++) {
+		if (!water_line[i].calc_path_flag)
+			water_line[i].computation(line_array, dot_array, num_of_line, num_of_dot, dot_idx, change_line_flag);
+		water_line[i].draw();
+	}
+}
+
+void ofApp::checkTwice(int& check, int& flag1, int& flag2)
+{
+	if (check) {
+		flag1 = flag2 = check = 0;
+	}
+	else {
+		flag1 = flag2 = check = 1;
+	}
+}
+
+void ofApp::checkTwice(int& check, int& flag)
+{
+	if (check) {
+		check = flag = 0;
+	}
+	else {
+		check = flag = 1;
+	}
+
+}
+
+void ofApp::setBackground()
 {
 	background.allocate(width, height);
 	background.begin();
 
-	// Draw shapes for ceiling and floor
 	ofDrawRectangle(0, 0, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
 	ofDrawRectangle(0, 728, 1024, 40); // Top left corner at (50, 50), 100 wide x 100 high
 
 	background.end();
 }
 
-void ofApp::draw_star(int x, int y)
+void ofApp::changeLine()
+{
+	for (int i = 0; i < num_of_line; i++) {
+		ofSetColor(255, 255, 255);
+		if (night_mode_flag || change_line_flag) ofSetColor(0, 0, 0);
+		if (night_mode_flag && change_line_flag) ofSetColor(255, 255, 255);
+		ofDrawLine(line_array[i][0], line_array[i][3], line_array[i][2], line_array[i][1]);
+	}
+}
+
+void ofApp::drawStar(int x, int y)
 {
 	ofSetLineWidth(1);
 
@@ -391,5 +399,3 @@ void ofApp::draw_star(int x, int y)
 		ofDrawLine(x, y, x + xOffset, y+ yOffset);
 	}
 }
-
-

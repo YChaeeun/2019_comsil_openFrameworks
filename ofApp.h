@@ -28,8 +28,7 @@ class ofApp : public ofBaseApp {
 		int height;
 		ofFbo background;
 
-		void set_background();
-		
+		void setBackground();
 
     /* ------------------ WATER FALL BASIC ------------------*/
 	// flag variables
@@ -37,6 +36,7 @@ class ofApp : public ofBaseApp {
 		int load_flag;
 		int draw_sub_flag;
 		int water_fall_flag;
+		int fall_twice;
 
 	// Line segment and dot related variables
 		int num_of_line, num_of_dot;
@@ -47,21 +47,28 @@ class ofApp : public ofBaseApp {
 		int** dot_array;
 
 		int num_of_water_line;
-		vector<water> waterline;
+		vector<water> water_line;
     
 	// member function
 		void processOpenFileSelection(ofFileDialogResult openFileResult);
 		void initializeWaterLines();
-		
+
+		void drawLine();
+		void drawDots();
+		void drawWaterStream();
+
+		void checkTwice(int& check, int& flag1, int& flag2);
+		void checkTwice(int& check, int& flag);
 
 	/* ------------------ CHANGE LINE MODE ------------------*/
 		int change_line_flag;
 		int change_twice;
 
+		void changeLine();
 
 	/* --------------------- NIGHT MODE ---------------------*/
 		int night_mode_flag;
 		int night_twice;
 		
-		void draw_star(int x, int y);
+		void drawStar(int x, int y);
 };
