@@ -1,6 +1,9 @@
 #include "water.h"
 #include <math.h>
 #include <cstdlib>
+
+#define LARGE 100000
+
 #define MIN(x,y) (((x)<(y))? (x):(y))
 #define MAX(x,y) (((x)>(y))? (x):(y))
 
@@ -13,7 +16,7 @@ water::water(int num_of_line)
 {
 	num_of_path = num_of_line * 2 + 2;
 	if (inter_path) {
-		inter_path = (coordinate*)malloc(sizeof(coordinate)*num_of_path+1); //  line °³¼ö
+		inter_path = (coordinate*)malloc(sizeof(coordinate)*num_of_path+1);
 		for (int i = 0; i < num_of_path; i++) {
 			inter_path[i].x = inter_path[i].y = -1;
 		}
@@ -105,7 +108,7 @@ int water::distance(int * line_array, int start_x, int start_y, int change_flag)
 
 int water::findNearestLine(int** line_array, int num_of_line, int start_x, int start_y)
 {
-	int nearest_y = 100000;
+	int nearest_y = LARGE;
 	int n_idx = -1;
 	for (int i = 0; i < num_of_line; i++) { // find closest line
 		if (line_array[i][1] < start_y || line_array[i][3] < start_y) continue;

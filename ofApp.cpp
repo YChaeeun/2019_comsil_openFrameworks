@@ -11,6 +11,7 @@ void ofApp::setup(){
 	white.set(255, 255, 255);
 	black.set(0, 0, 0);
 	brown.set(127, 23, 31);
+	red.set(255, 0, 0);
 
 	ofBackground(white);
 
@@ -43,7 +44,7 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
 
-	if (night_mode_flag) {
+	if (night_mode_flag) { // NIGHT MODE
 		ofBackground(black);
 
 		drawStar(ofRandom(100, width - 100), ofRandom(40, height - 300));
@@ -60,17 +61,17 @@ void ofApp::draw(){
 		drawLine();
 		drawDots();
 
-		if (change_line_flag) {
+		if (change_line_flag) { // CHANGE LINE MODE
 			changeLine();
 		}
 		
-		if (draw_sub_flag) {
+		if (draw_sub_flag) {   // WATER FALL BASIC
 			drawWaterStream();
 		}
 	}
 
 	ofSetColor(brown);
-	background.draw(0, 0);
+	background.draw(0, 0); // Background : bricks ceiling and bottom
 }
 
 //--------------------------------------------------------------
@@ -80,15 +81,15 @@ void ofApp::keyPressed(int key){
         glReadBuffer(GL_FRONT);
         ofSaveScreen("savedScreenshot_"+ofGetTimestampString()+".png");
     }
-    if (key == 'q'){
+    if (key == 'q'){ // quit
         draw_flag = 0;
         
-		for (int i = 0; i < num_of_line; i++) {
+		for (int i = 0; i < num_of_line; i++) { // deallocate
 			delete line_array[i];
 		}
 		delete line_array;
 
-		for (int i = 0; i < num_of_dot; i++) {
+		for (int i = 0; i < num_of_dot; i++) { // deallocate
 			delete dot_array[i];
 		}
 		delete dot_array;
@@ -97,24 +98,24 @@ void ofApp::keyPressed(int key){
         
         _Exit(0);
     }
-    if (key == 'd'){
+    if (key == 'd'){ // Background : draw lines & dots
         if(!load_flag) return;
         
 		draw_flag = 1;       
     }
-    if (key == 's'){
+    if (key == 's'){ // WATER FALL BASIC 
 		if (!load_flag) return;
 		if (!water_fall_flag) initializeWaterLines();
 
 		checkTwice(fall_twice, water_fall_flag, draw_sub_flag);
     }
-    if (key == 'e'){
+    if (key == 'e'){ // CHANGE LINE MODE : upside down
 		if (!load_flag) return;
 		if (water_fall_flag) return;
 
 		checkTwice(change_twice, change_line_flag);
     }
-	if (key == 'n') {
+	if (key == 'n') { // NIGHT MODE
 		if (!load_flag) return;
 
 		checkTwice(night_twice, night_mode_flag);
@@ -136,15 +137,13 @@ void ofApp::keyReleased(int key){
         }
     }
     
-	if (!water_fall_flag) {
+	if (!water_fall_flag) { // change dot's coordinate
 		if (key == OF_KEY_RIGHT) {
-			dot_idx++;
-			if (dot_idx >= num_of_dot)
+			if (++dot_idx >= num_of_dot)
 				dot_idx = 0;
 		}
 		if (key == OF_KEY_LEFT) {
-			dot_idx--;
-			if (dot_idx < 0)
+			if (--dot_idx < 0)
 				dot_idx = num_of_dot - 1;
 		}
 	}
@@ -218,7 +217,7 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
         vector<string> words = ofSplitString(line, " ");
 		
         if( words.size() == 1){
-            if( !input_type){ // Input for the number of lines.
+            if( !input_type){ // Input for the number of lines
                 num_of_line = atoi(words[0].c_str());
 
 				line_array = new int*[num_of_line];
@@ -279,7 +278,8 @@ void ofApp::processOpenFileSelection(ofFileDialogResult openFileResult) {
 
 void ofApp::initializeWaterLines() {
 	int local_x, local_y;
-
+	
+// initialize
 	if (water_line.empty()) {
 		water_line.assign(num_of_water_line, water(num_of_line));
 	}
@@ -290,7 +290,7 @@ void ofApp::initializeWaterLines() {
 		}
 	}
 
-	// find (x,y) of selected dot
+// find (x,y) of selected dot
 	for (int i = 0; i < num_of_dot; i++) {
 		if (i == dot_idx) {
 			local_x = dot_array[i][0];
@@ -299,7 +299,7 @@ void ofApp::initializeWaterLines() {
 		}
 	}
 
-	// starting point (x,y)
+// starting point (x,y)
 	for (int i = 0; i < num_of_water_line; i++) {
 		water_line[i].inter_path[0].x = local_x;
 		water_line[i].inter_path[0].y = local_y;
@@ -321,7 +321,7 @@ void ofApp::drawDots()
 {
 	for (int i = 0; i < num_of_dot; i++) {
 		if (i == dot_idx) {
-			ofSetColor(255, 0, 0);
+			ofSetColor(red);
 		}
 		else {
 			ofSetColor(black);

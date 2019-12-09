@@ -32,6 +32,7 @@ class ofApp : public ofBaseApp {
 		ofColor white;
 		ofColor black;
 		ofColor brown;
+		ofColor red;
 
 		void setBackground();
 
